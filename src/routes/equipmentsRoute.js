@@ -94,7 +94,6 @@ const findAll = async (req, res) => {
                 Positions
             ]
         });
-    
         const modle =  equipments.map(m => {return {
                 id: m.id,
                 cate_id: m.cate_id,
