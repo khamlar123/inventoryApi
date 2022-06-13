@@ -3,9 +3,7 @@ const {
   Model
 } = require('sequelize');
 module.exports = (sequelize, DataTypes) => {
-  class positions extends Model {
-
-  }
+  class positions extends Model {}
   position.init({
     equip_id: DataTypes.INTEGER,
     cate_id: DataTypes.INTEGER,

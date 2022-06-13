@@ -15,28 +15,53 @@ const Suppliers = db.define('suppliers', {
 
 
 const create = async (req, res) => {
-    await Suppliers.create(req.body);
-    res.status(200).send('create suppliers done !');
+    try{
+        await Suppliers.create(req.body);
+        res.status(200).json('create suppliers done !');
+    }catch(err){
+        res.status(500).json(err);
+    }
+
 }
 
 const deleteData = async (req, res) => {
-    await Suppliers.destroy({where: {id:req.params.id}});
-    res.status(200).sned('delete suppliers done !');
+    try{
+        await Suppliers.destroy({where: {id:req.params.id}});
+        res.status(200).json('delete suppliers done !');
+    }catch(err){
+        res.status(500).json(err);
+    }
+
 }
 
 const update = async (req, res) => {
-    await Suppliers.update(req.body, {where:{id:req.body.id}});
-    res.status(200).send('update suppliers done !');
+    try{
+        await Suppliers.update(req.body, {where:{id:req.body.id}});
+        res.status(200).json('update suppliers done !');
+    }catch(err){
+        res.status(500).json(err);
+    }
+
 }
 
 const findAll = async (req, res) => {
-    const units = Suppliers.findAll();
-    res.status(200).json(units)
+    try{
+        const units = await Suppliers.findAll();
+        res.status(200).json(units)
+    }catch(err){
+        res.status(500).json(err);
+    }
+
 }
 
 const findOne = async (req, res) => {
-    const unit = Suppliers.findOne({where:{id:req.params.id}});
-    res.status(200).json(unit);
+    try{
+        const unit = await Suppliers.findOne({where:{id:req.params.id}});
+        res.status(200).json(unit);
+    }catch(err){
+        res.status(500).json(err);
+    }
+
 }
 
 module.exports ={

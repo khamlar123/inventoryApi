@@ -9,28 +9,52 @@ const Positions = db.define('positions', {
 });
 
 const create = async (req, res) => {
-    await Positions.create(req.body);
-    res.status(200).send('create positions done !');
+    try{
+
+        await Positions.create(req.body);
+        res.status(200).json('create positions done !');
+
+    }catch(err){
+        res.status(500).json(err);
+    }
 }
 
 const deleteData = async (req, res) => {
-    await Positions.destroy({where: {id:req.params.id}});
-    res.status(200).sned('delete positions done !');
+    try{
+        await Positions.destroy({where: {id:req.params.id}});
+        res.status(200).json('delete positions done !');
+    }catch(err){
+        res.status(500).json(err);
+    }
+ 
 }
 
 const update = async (req, res) => {
-    await Positions.update(req.body, {where:{id:req.body.id}});
-    res.status(200).send('update positions done !');
+    try{
+        await Positions.update(req.body, {where:{id:req.body.id}});
+        res.status(200).json('update positions done !');
+    }catch(err){
+        res.status(500).json(err);
+    }
+
 }
 
 const findAll = async (req, res) => {
-    const units = await Positions.findAll();
-    res.status(200).json(units)
+    try{
+        const units = await Positions.findAll();3
+        res.status(200).json(units);
+    }catch(err){
+        res.status(500).json(err);
+    }
 }
 
 const findOne = async (req, res) => {
-    const unit = Positions.findOne({where:{id:req.params.id}});
-    res.status(200).json(unit);
+    try{
+        const unit = Positions.findOne({where:{id:req.params.id}});
+        res.status(200).json(unit);
+    }catch(err){
+        res.status(500).json(err);
+    }
 }
 
 module.exports ={

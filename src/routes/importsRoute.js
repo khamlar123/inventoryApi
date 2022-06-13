@@ -26,7 +26,7 @@ const create = async (req, res) => {
         await Import_details.create({import_id: createImpor.id, equip_id, equip_qty, import_date});
         res.status(200).json('create Imports done !');
     }else{
-        res.status(200).send('create import error !');
+        res.status(200).json('create import error !');
     }
 }
 
@@ -34,9 +34,9 @@ const deleteData = async (req, res) => {
     const findItem = await Imports.findOne({where: {id: req.params.id}});
     if(findItem){
         await Imports.update({active: false},{where: {id: req.params.id}});
-        res.status(200).send('delete import done !')
+        res.status(200).json('delete import done !')
     }else{
-        res.status(500).send('delete import error !')
+        res.status(500).json('delete import error !')
     }
 }
 
@@ -49,7 +49,7 @@ const update = async (req, res) => {
         await Import_details.update({import_id: createImport.id, equip_id, equip_qty, import_date},{where:{import_id:id}});
         res.status(200).json('update Imports done !');
     }else{
-        res.status(200).send('update import error !');
+        res.status(200).json('update import error !');
     }
 }
 
@@ -65,7 +65,7 @@ const findAll = async (req, res) => {
             }));
             res.status(200).json(importsList)
         }else{
-            res.status(500).send('error !');
+            res.status(500).json('error !');
         }
 }
 
@@ -86,7 +86,7 @@ const findOne = async (req, res) => {
     }
         res.status(200).json(resl);
     }else{
-        res.status(500).send('error !');
+        res.status(500).json('error !');
     } 
 }
 
