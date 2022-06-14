@@ -18,6 +18,14 @@ const Import_details = db.define('import_details', {
     import_date: DataTypes.DATE,
 });
 
+const Equipments = db.define('equipments', {
+    cate_id: DataTypes.INTEGER,
+    unit_id: DataTypes.INTEGER,
+    equip_name: DataTypes.STRING,
+    equip_stock: DataTypes.INTEGER,
+    equip_import: DataTypes.INTEGER,
+});
+
 
 const create = async (req, res) => {
 
@@ -26,7 +34,13 @@ const create = async (req, res) => {
         const createImpor = await Imports.create({pur_id, user_id, import_date, equip_stock, equip_import, active: true});
         if(createImpor.id > 0){
             await Import_details.create({import_id: createImpor.id, equip_id, equip_qty, import_date});
-            res.status(200).json('create Imports done !');
+            const findItrem = await Equipments.findOne({where: {id: equip_id}});
+            const totalQty = findItrem.dataValues.equip_stock + equip_qty;
+            const updateequ =  await Equipments.update({equip_stock:totalQty }, {where:{id: equip_id}});
+            if(updateequ){
+                res.status(200).json('create Imports done !');
+            }
+
         }else{
             res.status(200).json('create import error !');
         }  
@@ -43,6 +57,12 @@ const deleteData = async (req, res) => {
         const findItem = await Imports.findOne({where: {id: req.params.id}});
         if(findItem){
             await Imports.update({active: false},{where: {id: req.params.id}});
+            const findDetail = await Import_details.findOne({where: {import_id: req.params.id}});
+           const findItem = await Equipments.findOne({where: {id:  findDetail.dataValues.equip_id}});
+
+            const totalQty = (findItem.dataValues.equip_stock - findDetail.dataValues.equip_qty )
+            await Equipments.update({equip_stock:totalQty},{where: {id:  findDetail.dataValues.equip_id}});
+        
             res.status(200).json('delete import done !')
         }else{
             res.status(500).json('delete import error !')
@@ -61,6 +81,12 @@ const update = async (req, res) => {
         const createImport = await Imports.update({pur_id, user_id, import_date, equip_stock, equip_import, active},{where:{id:id}});
         if(createImport){
             await Import_details.update({import_id: createImport.id, equip_id, equip_qty, import_date},{where:{import_id:id}});
+
+
+            const findItrem = await Equipments.findOne({where: {id: equip_id}});
+            const totalQty = findItrem.dataValues.equip_stock + equip_qty;
+            const updateequ =  await Equipments.update({equip_stock:totalQty }, {where:{id: equip_id}});
+
             res.status(200).json('update Imports done !');
         }else{
             res.status(200).json('update import error !');
@@ -74,23 +100,24 @@ const update = async (req, res) => {
 
 const findAll = async (req, res) => {
 
-    try{
-        const imports = await Imports.findAll({where: {active: true}});
-        const imports_detail = await Import_details.findAll();
-    
-        if(imports, imports_detail){
-    
-            const importsList = imports.map(prod => ({ 
-                ...prod.dataValues, 
-                ...(imports_detail.find(item => item.import_id === prod.id).dataValues ?? {})
-                }));
-                res.status(200).json(importsList)
-            }else{
-                res.status(500).json('error !');
-            }
-    }catch(err){
-        res.status(500).json(err);
+    const imports = await Imports.findAll({where: {active: true}});
+    const imports_detail = await Import_details.findAll();
+    if(imports, imports_detail){
+
+    const importsList = imports.map(prod => ({ 
+        ...prod.dataValues, 
+        ...(imports_detail.find(item => item.import_id === prod.id).dataValues ?? {})
+        }));
+        res.status(200).json(importsList)
+    }else{
+        res.status(500).json('error !');
     }
+
+    // try{
+
+    // }catch(err){
+    //     res.status(500).json(err);
+    // }
  
 }
 

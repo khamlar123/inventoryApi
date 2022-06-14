@@ -75,7 +75,6 @@ router.get('/unit/:id', unitController.findOne);
 router.put('/unit/edit-unit', unitController.update);
 router.post('/unit/add-unit', unitController.create);
 router.delete('/unit/:id', unitController.deleteData);
-
 router.post('/login', loginController.login);
 
 module.exports = router
