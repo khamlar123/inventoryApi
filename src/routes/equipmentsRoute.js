@@ -59,6 +59,7 @@ const create = async (req, res) => {
 
 const deleteData = async (req, res) => {
     try{
+        const pos = await Positions.destroy({where:{equip_id:req.params.id}});
         const del =  await Equipments.destroy({where: {id:req.params.id}});
         res.status(200).json(del);
     }catch{
