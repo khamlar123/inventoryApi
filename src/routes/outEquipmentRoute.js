@@ -12,6 +12,7 @@ const Outequipment_details = db.define('Outequipment_details', {
     equip_id: DataTypes.INTEGER,
     out_qty: DataTypes.INTEGER,
     out_date: DataTypes.DATE,
+    depament : DataTypes.STRING,
 });
 
 const Equipments = db.define('equipments', {
@@ -24,10 +25,10 @@ const Equipments = db.define('equipments', {
 
 const create = async (req, res) => {
     try{
-        const {staff_id, out_qty, out_date, equip_id} = req.body;
-        const out = await Out_equipments.create({staff_id, out_date, active: true});
+        const {staff_id, out_qty, out_date, equip_id, depament} = req.body;
+        const out = await Out_equipments.create({staff_id, out_date,active: true});
         if(out.id > 0){
-             await Outequipment_details.create({out_id:out.id, equip_id, out_qty, out_date});
+             await Outequipment_details.create({out_id:out.id, depament:depament,equip_id, out_qty, out_date});
 
              const findItrem = await Equipments.findOne({where: {id: equip_id}});
              const totalQty = findItrem.dataValues.equip_stock - out_qty;
@@ -46,7 +47,7 @@ const deleteData = async (req, res) => {
     try{
         const findItem = await Out_equipments.findOne({where: {id: req.params.id}});
         if(findItem){
-            await Out_equipments.update({active: false},{where: {id: req.params.id}});
+            await Out_equipments.update({active: 0},{where: {id: req.params.id}});
 
             const findDetail = await Outequipment_details.findOne({where: {out_id: req.params.id}});
             const findItem = await Equipments.findOne({where: {id:  findDetail.dataValues.equip_id}});
@@ -84,18 +85,23 @@ const update = async (req, res) => {
 }
 
 const findAll = async (req, res) => {
+
     try{
+
         const imports = await Out_equipments.findAll({where: {active: true}});
         const imports_detail = await Outequipment_details.findAll();
+    
         if(imports, imports_detail){
         const importsList = imports.map(prod => ({ 
             ...prod.dataValues, 
             ...(imports_detail.find(item => item.out_id === prod.id).dataValues ?? {})
             }));
+    
             res.status(200).json(importsList)
         }else{
             res.status(500).json('error !');
         }
+  
     }catch(err){
         res.status(500).json(err)
     }

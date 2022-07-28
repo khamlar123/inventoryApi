@@ -17,7 +17,8 @@ module.exports = (sequelize, DataTypes) => {
     out_id: DataTypes.INTEGER,
     equip_id: DataTypes.INTEGER,
     out_qty: DataTypes.INTEGER,
-    out_date: DataTypes.DATE
+    out_date: DataTypes.DATE,
+    depament: DataTypes.STRING,
   }, {
     sequelize,
     modelName: 'outequipment_details',
